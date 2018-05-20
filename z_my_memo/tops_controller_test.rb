@@ -1,4 +1,7 @@
-require 'test_helper'
+# chap03
+# test/controllers/tops_controller_test.rb
+
+requre 'test_helper'
 
 class TopsControllerTest < ActionDispatch::IntegrationTest
 
