@@ -41,6 +41,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.7.2'
   gem "factory_bot_rails"
   gem 'spring-commands-rspec'
+  gem 'rspec-its'
 end
 
 group :development do
@@ -56,7 +57,7 @@ end
 # rspec
 group :test do
   gem "faker", "~> 1.4.3"
-  gem "capybara", "~> 2.4.3"
+  gem 'capybara', '~> 2.15.2'
   gem "database_cleaner", "~> 1.3.0"
   gem "launchy", "~> 2.4.2"
   gem "selenium-webdriver", "~> 2.43.0"
