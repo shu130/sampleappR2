@@ -61,6 +61,10 @@ group :test do
   gem "database_cleaner", "~> 1.3.0"
   gem "launchy", "~> 2.4.2"
   gem "selenium-webdriver", "~> 2.43.0"
+
+  # gem 'shoulda-matchers',
+  #   git: 'https://github.com/thoughtbot/shoulda-matchers.git',
+  #   branch: 'rails-5'
 end
 
 # minitest

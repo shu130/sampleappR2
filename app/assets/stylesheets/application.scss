@@ -1,0 +1,9 @@
+// Bootstrap
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+// base/bootstrap.scss
+@import "base/bootstrap.scss";
+
+// Partials - メインのcssファイル
+@import "partials/*";
