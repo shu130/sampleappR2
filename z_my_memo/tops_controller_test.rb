@@ -12,25 +12,25 @@ class TopsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "#home" do
-    get root_url
+    get root_path
     assert_response :success
     assert_select "title", "#{@base_title}"
   end
 
   test "#help" do
-    get help_url
+    get help_path
     assert_response :success
     assert_select "title", "Help | #{@base_title}"
   end
 
   test "#about" do
-    get about_url
+    get about_path
     assert_response :success
     assert_select "title", "About | #{@base_title}"
   end
 
   test "#contact" do
-    get contact_url
+    get contact_path
     assert_response :success
     assert_select "title", "Contact | #{@base_title}"
   end
