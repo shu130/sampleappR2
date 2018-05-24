@@ -13,5 +13,10 @@ class ActiveSupport::TestCase
   # full_title ヘルパーメソッドを使いたいので
   include ApplicationHelper
 
-  # Add more helper methods to be used by all tests here...
+  include SessonsHelper
+
+  # def is_logged_in?
+  #   !session[:user_id].nil?
+  # end
+
 end
