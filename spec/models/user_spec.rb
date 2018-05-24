@@ -118,4 +118,11 @@ RSpec.describe User, type: :model do
     end
   end
 
+  # remember_digest
+  describe "remember digest" do
+    before { @user.save }
+    its(:remember_digest) { should_not be_blank }
+  end
+
+
 end

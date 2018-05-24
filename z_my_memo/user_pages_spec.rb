@@ -1,7 +1,7 @@
 
 
-# chap07
-# アウトライン
+# chap07, chap08
+# outline
 
 "UserPages"
   describe "profile"
@@ -13,7 +13,7 @@
 
 
 
-# chap07
+# chap07, chap08
 spec/features/user_pages_spec.rb
 
 require 'rails_helper'
@@ -62,8 +62,10 @@ RSpec.feature "UserPages", type: :feature do
       context "after save user" do
         before { click_button submit }
         let(:user) { User.find_by(email: "user@example.com") }
+
         it { should have_title(user.name) }
         it { should have_selector('div.alert.alert-success', text: 'Welcome') }
+        it { should have_link("Log out") }
       end
     end
   end
