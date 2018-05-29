@@ -34,10 +34,12 @@ group :development, :test do
   gem 'byebug',  '9.0.6', platform: :mri  # debuggerメソッド用
 
   # rspec
+
   # gem "rspec-rails", "~> 3.1.0"
   # gem "rspec-rails"
   # gem "factory_girl_rails", "~> 4.4.1"
 
+  gem "faker"
   gem 'rspec-rails', '~> 3.7.2'
   gem "factory_bot_rails"
   gem 'spring-commands-rspec'
@@ -56,7 +58,8 @@ end
 
 # rspec
 group :test do
-  gem "faker", "~> 1.4.3"
+  # gem "faker", "~> 1.4.3"
+  # gem "faker"
   gem 'capybara', '~> 2.15.2'
   gem "database_cleaner", "~> 1.3.0"
   gem "launchy", "~> 2.4.2"

@@ -1,14 +1,10 @@
 
-# chap08
-# outline
+# chap09
 test "login with invalid infomation"
 test "login with valid infomation"
 test "login fowllowed by logout"
 test "login with remembering"
 test "login without remembering"
-
-
-# chap08
 
 require 'test_helper'
 
@@ -32,7 +28,7 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     get login_path
     post login_path, params: { session: { email: @user.email,
                                           password: 'password'} }
-    assert_redirect_to @user
+    assert_redirected_to @user
     follow_redirect!
     assert_template 'users/show'
     assert_select "a[href=?]", login_path, count: 0
@@ -43,15 +39,15 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
   test "login fowllowed by logout" do
     get login_path
     post login_path, params: { session: { email: @user.email,
-                                          password: 'password'}
-    assert_redirect_to @user
-    assert logged_in?
+                                          password: 'password'} }
+    assert_redirected_to @user
+    assert is_logged_in?
     follow_redirect!
     assert_template 'users/show'
     # １回目のログアウトのクリック
     delete logout_path
-    assert_not logged_in?
-    assert_redirect_to root_url
+    assert_not is_logged_in?
+    assert_redirected_to root_url
     # ２回目のログアウトのクリック
     delete logout_path
     follow_redirect!
@@ -77,21 +73,13 @@ end
 
 
 
-
-
-
-
-# chap07
+# chap08
 # outline
-
 test "login with invalid infomation"
 test "login with valid infomation"
 test "login fowllowed by logout"
 
-
-# chap07
 require 'test_helper'
-
 class UsersLoginTest < ActionDispatch::IntegrationTest
 
   def setup
@@ -130,9 +118,4 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", logout_path, count: 0
     assert_select "a[href=?]", user_path(@user), count: 0
   end
-
-
-
-
-
 end

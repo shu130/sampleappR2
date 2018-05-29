@@ -13,11 +13,11 @@ class ActiveSupport::TestCase
   # full_title ヘルパーメソッドを使いたいので
   include ApplicationHelper
 
-  include SessonsHelper
+  # include SessionsHelper
 
-  # def is_logged_in?
-  #   !session[:user_id].nil?
-  # end
+  def is_logged_in?
+    !session[:user_id].nil?
+  end
 
   def log_in_as(user)
     session[:user_id] = user.id

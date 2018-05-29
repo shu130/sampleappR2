@@ -1,3 +1,10 @@
+
+# chap09
+test "current_user returns right user when session is nil"
+test "current_user returns nil when remember digest is wrong"
+
+
+test/helpers/sessions_helper_test.rb
 require 'test_helper'
 
 class SessionsHelperTest < ActionView::TestCase

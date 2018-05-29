@@ -1,3 +1,11 @@
+
+
+
+# chap08
+test "invalid signup infomation"
+test "valid signup infomation"
+
+# code
 require 'test_helper'
 
 class UsersSignupTest < ActionDispatch::IntegrationTest
@@ -31,3 +39,10 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     assert_select "div.alert.alert-success", text: "Welcome to the Sample App!"
   end
 end
+
+
+
+
+# chap07
+test "invalid signup infomation"
+test "valid signup infomation"
