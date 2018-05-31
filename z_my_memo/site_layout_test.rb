@@ -35,8 +35,8 @@ end
 
 
 
-# chap04
-# test/integration/site_layout_test.rb
+# chap05
+test/integration/site_layout_test.rb
 
 require 'test_helper'
 

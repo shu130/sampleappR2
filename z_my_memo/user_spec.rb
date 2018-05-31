@@ -1,7 +1,56 @@
 
+# chap09
+リスト9.38 admin属性に対するテスト
+
+
+# chap08
+リスト8.15 記憶トークン用の最初のテスト
+リスト8.17 記憶トークンが有効である (空欄のない) ことをテスト
+
+
+# chap07
+# なし
 
 # chap06
-# アウトライン
+Userオブジェクト が持つ 属性、メソッド
+  # respond_to は Ruby の respond_to?メソッド
+  :name, :email
+  :password, :password_confirmation
+  :password_digest
+  :authenticate
+
+バリデーション
+  :name, :password, :password_confirmation
+    存在性、文字数
+  :email
+    存在性、文字数
+    フォーマット
+    大文字小文字を区別しない一意性
+
+:password_confirmation
+  password と一致しない場合は invalidオブジェクトになること
+
+パスワード認証(:authenticateメソッド)
+  ユーザーを返すこと
+  間違ったパスワードの場合は false を返すこと
+
+
+# list
+リスト6.4 実質的に空になっているデフォルトのUser spec
+リスト6.5 :nameと:email属性
+リスト6.8 name属性の検証に対する、失敗するテスト
+リスト6.9 email属性の存在性のテスト
+リスト6.11 nameの長さ検証のテスト
+リスト6.13 メールアドレスフォーマットの検証テスト
+リスト6.15 重複するメールアドレスの拒否のテスト
+リスト6.17 大文字小文字を区別しない、重複するメールアドレスの拒否のテスト
+リスト6.22 Userオブジェクトにpassword_digestカラムがあることを確認するテスト
+リスト6.24 password属性とpassword_confirmation属性をテスト
+リスト6.25 パスワードとパスワードの確認をテスト
+リスト6.28 パスワードの長さとauthenticateメソッドをテスト
+リスト6.30 リスト6.20のメールアドレス小文字変換をテスト
+
+# chap06
 
 # :name
   describe "when name is not present"
@@ -19,40 +68,26 @@
   describe "when password is too short"
   describe "returen value of authenticate method"
 
-User
-  should respond to #name
-  should respond to #email
-  should respond to #password_digest
-  should respond to #authenticate
-  when name is not present
-    should not be valid
-  when name is too long
-    should not be valid
-  when email is not present
-    should not be valid
-  when email format is invalid
-    should be invalid
-  when email format is valid
-    should be valid
-  when email address is already taken
-    should not be valid
-  when email address is mixed-case
-    should be saved as lower-case
-  when password is not present
-    should not be valid
-  when password doesnt match confirmation
-    should not be valid
-  when password is too short
-    should not be valid
-  returen value of authenticate method
-    with valid password
-      should eq #<User id: 1, name: "Example User", email: "user@example.com", created_at: "2018-05-22 13:22:53", upd...at: "2018-05-22 13:22:53", password_digest: "$2a$04$boNAg4thVEpjdviEFVk6m..ilHynTYKl2UtiwKS.mXt...">
-    with invalid password
-      should not eq false
-      should be falsey
 
-Finished in 0.57179 seconds (files took 1.41 seconds to load)
-17 examples, 0 failures
+
+# chap06
+
+# :name
+  describe "when name is not present"
+  describe "when name is too long"
+# :email
+  describe "when email is not present"
+  describe "when email is too long"
+  describe "when email format is invalid"
+  describe "when email format is valid"
+  describe "when email address is already taken"
+  describe "when email address is mixed case"
+# :password
+  describe "when password is not present"
+  describe "when password doesn't match confirmation"
+  describe "when password is too short"
+  describe "returen value of authenticate method"
+
 
 
 # chap06

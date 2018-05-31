@@ -29,10 +29,12 @@ class UsersController < ApplicationController
 
   def edit
     # before_action
+    #  :logged_in_check, :right_user_check
   end
 
   def update
     # before_action
+    #  :logged_in_check, :right_user_check
     if @user.update_attributes(user_params)
       flash[:success] = "Profile updated"
       redirect_to @user

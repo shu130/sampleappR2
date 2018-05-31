@@ -1,10 +1,8 @@
 
-SiteLayout
-  should have right links
 
 
 # chap05
-# spec/features/site_layout_spec.rb
+spec/features/site_layout_spec.rb
 
 require 'rails_helper'
 

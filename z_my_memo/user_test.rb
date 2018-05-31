@@ -1,6 +1,6 @@
 
-# chap06
-# アウトライン
+# chap09
+リスト 9.17: ダイジェストが存在しない場合のauthenticated?のテスト
 
 # :name
   test "name should be present (non-blank)"
@@ -15,7 +15,44 @@
 # :password
   test "password should be present (non-blank)"
   test "password should have a minimum length"
+# authenticated? method
+  test "authenticated? should return false for a user with nil digest"
 
+
+# chap07, chap08
+# なし
+
+
+# chap06
+# :name
+  test "name should be present (non-blank)"
+  test "name should not be too long"
+# :email
+  test "email should be present"
+  test "email should not be too long"
+  test "email validation should accept valid addresses"
+  test "email validation should reject invalid addresses"
+  test "email addresses should be unique"
+  test "email addresses should be saved as lower-case"
+# :password
+  test "password should be present (non-blank)"
+  test "password should have a minimum length"
+
+
+# chap06
+# list
+リスト 6.4: デフォルトのUserテスト (モックのみ)
+リスト 6.5: 有効なUserかどうかをテスト
+リスト 6.7: name属性にバリデーションに対するテスト
+リスト 6.11: email属性の検証に対するテスト
+リスト 6.14: nameの長さの検証に対するテスト
+リスト 6.18: 有効なメールフォーマットをテスト
+リスト 6.19: メールフォーマットの検証に対するテスト
+リスト 6.24: 重複するメールアドレス拒否のテスト
+リスト 6.26: 大文字小文字を区別しない、一意性のテスト
+リスト 6.33: リスト 6.32のメールアドレスの小文字化に対するテスト
+リスト 6.39: パスワードとパスワード確認を追加する
+リスト 6.41: パスワードの最小文字数をテスト
 
 
 # chap06
