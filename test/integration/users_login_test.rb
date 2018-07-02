@@ -36,11 +36,11 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     assert is_logged_in?
     follow_redirect!
     assert_template 'users/show'
-    # １回目のログアウトのクリック
+    # １回目のログアウト
     delete logout_path
     assert_not is_logged_in?
     assert_redirected_to root_url
-    # ２回目のログアウトのクリック
+    # ２回目のログアウト
     delete logout_path
     follow_redirect!
     assert_select "a[href=?]", login_path, count: 1

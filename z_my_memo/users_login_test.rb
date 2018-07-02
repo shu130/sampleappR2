@@ -1,4 +1,16 @@
 
+
+# chap09
+リスト 9.14: ユーザーログアウトのテスト
+リスト 9.25: [remember me] チェックボックスのテスト
+リスト 9.28: [remember me] テストを改良（演習）
+
+
+# chap08
+リスト 8.27: ユーザー登録後のログインのテスト
+
+
+
 # chap09
 test "login with invalid infomation"
 test "login with valid infomation"

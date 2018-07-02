@@ -58,7 +58,7 @@ RSpec.feature "UserPages", type: :feature do
 
     context "with invalid infomation" do
       it "should not create user" do
-        expect { click_button }.not_to change(User, :count)
+        expect { click_button submit }.not_to change(User, :count)
       end
 
       context "after submit" do
@@ -67,7 +67,6 @@ RSpec.feature "UserPages", type: :feature do
         it { should have_content('error') }
         it { should have_selector("div.alert.alert-danger") }
       end
-
     end
     context "with valid infomation" do
       before do
@@ -76,6 +75,16 @@ RSpec.feature "UserPages", type: :feature do
         fill_in "Password",     with: "foobar"
         fill_in "Confirmation", with: "foobar"
       end
+
+      # before { set_signup_info }
+
+      # let(:user_attr) { FactoryBot.attributes_for(:user) }
+      # let(:signup_params) { params: { user: user_attr } }
+      # before do
+      #   set_valid_info
+      #   click_button submit
+      #   post users_path, user_attr
+      # end
 
       it "should create user" do
         expect { click_button submit }.to change(User, :count).by(1)

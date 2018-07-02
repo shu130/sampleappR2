@@ -3,12 +3,6 @@ namespace :db do
 
   task populate: :environment do
 
-    # admin = User.create!(name: "shuhei.tanabe",
-    #                      email: "shuhei.tanabe0130@gmail.com",
-    #                      password: "foobar",
-    #                      password_confirmation: "foobar",
-    #                      admin: true)
-
     User.create!(name: "shuhei.tanabe",
                  email: "shuhei.tanabe0130@gmail.com",
                  password: "foobar",
@@ -27,7 +21,15 @@ namespace :db do
       User.create!(name: name,
                    email: email,
                    password: password,
-                   password_confirmation: password)
+                   password_confirmation: password,
+                   admin: false)
+    end
+
+    # users = User.all(limit: 6) # or
+    users = User.order(:created_at).take(6)
+    50.times do
+      content = Faker::Lorem.sentence(5)
+      users.each { |user| user.microposts.create!(content: content) }
     end
   end
 end

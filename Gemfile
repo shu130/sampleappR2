@@ -44,6 +44,7 @@ group :development, :test do
   gem "factory_bot_rails"
   gem 'spring-commands-rspec'
   gem 'rspec-its'
+  gem "database_cleaner"
 end
 
 group :development do
@@ -61,13 +62,17 @@ group :test do
   # gem "faker", "~> 1.4.3"
   # gem "faker"
   gem 'capybara', '~> 2.15.2'
-  gem "database_cleaner", "~> 1.3.0"
+  # gem "database_cleaner", "~> 1.3.0"
+  # gem "database_cleaner"
   gem "launchy", "~> 2.4.2"
   gem "selenium-webdriver", "~> 2.43.0"
 
-  # gem 'shoulda-matchers',
-  #   git: 'https://github.com/thoughtbot/shoulda-matchers.git',
-  #   branch: 'rails-5'
+  gem 'shoulda-matchers',
+    git: 'https://github.com/thoughtbot/shoulda-matchers.git',
+    branch: 'rails-5'
+
+  # gem 'shoulda-matchers', '2.7.0'
+  # gem 'shoulda-matchers', '~> 3.1'
 end
 
 # minitest

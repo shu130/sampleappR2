@@ -1,37 +1,15 @@
 
-要件、テスト項目を整理する
-この章で使った文法
-
-
-
-
-# chap06
-要件、テスト項目を整理する
-
-属性、メソッド
-  :name, :email
-  :password, :password_confirmation
-  :password_digest
-  :authenticate
-
-バリデーション
-  存在性
-    :name, :email,
-  文字数
-  フォーマット
-  一意性（大文字でも小文字でも同じとみなす）
-
-:password_confirmation
-  password と一致しない場合は invalidオブジェクトになること
-
-パスワード認証(:authenticateメソッド)
-  ユーザーを返すこと
-  間違ったパスワードの場合は false を返すこと
-
-
 # chap06
 この章で使った文法
 
+respond_to
+should be_valid, should_not be_valid
+@user.属性 = "   "
+@user.属性 = "a" * 文字数
+expect(@user).not_to be_valid
+expect(@user).to be_valid
+@user.reload.email
+@user.save
 
 # 属性、メソッド
 # :name
