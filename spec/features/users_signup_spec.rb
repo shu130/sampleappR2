@@ -1,12 +1,13 @@
 require 'rails_helper'
 
 RSpec.feature "UsersSignup", type: :feature do
+
   include SupportModule
   subject { page }
 
   describe "signup" do
     context "valid" do
-      scenario "create new user (increment: 1)" do
+      scenario "success create new-user (increment: 1)" do
         visit signup_path
         expect {
           # fill_in_signup_valid
@@ -21,16 +22,18 @@ RSpec.feature "UsersSignup", type: :feature do
     end
     # abnomal
     context "invalid" do
-      scenario "fail create new user (increment: 0)" do
+      scenario "fail create new-user (increment: 0)" do
         visit signup_path
         expect {
           # fill_in_signup_invalid
           fill_in_signup_form(:user, invalid: true)
           click_button "Create my account"
           error_flash "errors"
-          error_flash
+          # error_flash
           current_path(users_path)
-          title_heading("Sign up")
+          # title_heading("Sign up")
+          should have_title("Sign up")
+          should have_css("h1", text: "Sign up")
         }.to change(User, :count).by(0)
       end
     end

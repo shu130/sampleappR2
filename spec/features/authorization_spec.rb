@@ -2,30 +2,94 @@ require 'rails_helper'
 
 # RSpec.feature "AuthenticationPages", type: :feature do
 RSpec.feature "Authorization", type: :feature do
+
   include SupportModule
+  include_context "setup"
+
   subject { page }
+
+  describe "in UsersController", type: :request do
+    # 未ログイン
+    context "non-login" do
+      describe "index" do
+        subject { Proc.new { get users_path } }
+        it_behaves_like "error message", "Please log in"
+        it_behaves_like "redirect to path", "/login"
+      end
+      describe "edit" do
+        subject { Proc.new { get edit_user_path(user) } }
+        it_behaves_like "error message", "Please log in"
+        it_behaves_like "redirect to path", "/login"
+      end
+      describe "update"do
+        subject { Proc.new { patch user_path(user), params: { user: update_params_1 } } }
+        # subject { Proc.new { patch user_path(user), update_params_1 } }
+        it_behaves_like "error message", "Please log in"
+        it_behaves_like "redirect to path", "/login"
+      end
+      describe "destroy"do
+        subject { Proc.new { delete user_path(other_user) } }
+        it_behaves_like "redirect to path", "/login"
+        it "decrease: 0" do
+          expect { subject.call }.to change(User, :count).by(0)
+        end
+      end
+    end
+    # 非管理者ユーザ
+    context "non-admin" do
+      describe "destroy" do
+        before { login_as(user) }
+        scenario "decrease: 0" do
+          expect {
+            # visit users_path
+            click_link "Users"
+            not have_link('delete', href: user_path(User.first))
+            not have_link('delete', href: user_path(User.second))
+          }.to change(User, :count).by(0)
+        end
+      end
+    end
+    # 管理者ユーザ
+    context "admin" do
+      describe "destroy" do
+        before { login_as(admin) }
+        scenario "decrease: 1" do
+          expect {
+            # visit users_path
+            click_link "Users"
+            # expect(page).to have_link "delete", href: user_path(User.first)
+            have_link('delete', href: user_path(User.first))
+            have_link('delete', href: user_path(User.second))
+            not have_link('delete', href: user_path(admin))
+            click_link "delete", match: :first
+          }.to change(User, :count).by(-1)
+        end
+      end
+    end
+  end
 
   describe "in MicropostsController", type: :request do
     context "non-login" do
-      describe "create action" do
+      describe "create" do
         # let!(:valid_params) { attributes_for(:user_post) }
         # before { post microposts_path, params: valid_params }
         before { post microposts_path }
-        scenario "error with message 'Please log in'" do
-          # visit microposts_path
-          # なぜかNG
+        scenario "error message 'Please log in'" do
+          expect {
           error_flash "Please log in"
           current_path(login_path)
-          # current_path(root_path)
+          }
         end
       end
-      describe "destroy action" do
+      describe "destroy" do
         let!(:my_post) { create(:user_post) }
         before { delete micropost_path(my_post) }
         scenario "error with message 'Please log in'" do
           # なぜかNG
+          expect {
           error_flash "Please log in"
           current_path(login_path)
+          }
           # current_path(root_path)
         end
       end

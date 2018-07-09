@@ -2,19 +2,7 @@ require 'rails_helper'
 
 RSpec.describe UsersController, type: :controller do
 
-  # let! で DBに保存し、レコードが７つある状態にしておく
-  let!(:other_users) { create_list(:other_user, 5) }
-  let!(:other_user) { create(:other_user) }
-  let!(:admin) { create(:admin) }
-  # let で 変数が呼ばれたタイミングで DB保存されるようにしておく
-  let(:user) { create(:user) }
-
-  # 属性をハッシュ化して呼ばれた時に使う
-  let(:valid_params) { attributes_for(:user) }
-  let(:invalid_params) { attributes_for(:user, name: nil) }
-  let(:update_params_1) { attributes_for(:user, name: "New name") }
-  let(:update_params_2) { attributes_for(:other_user, name: "New name") }
-  let(:admin_params) { attributes_for(:user, admin: true) }
+  include_context "setup"
 
   describe "GET #index" do
     subject { Proc.new { get :index } }
@@ -56,7 +44,7 @@ RSpec.describe UsersController, type: :controller do
       it_behaves_like "assigned @value is equal value", :user
       it_behaves_like "create data (increment:1)", User
       it_behaves_like "returns http status", :redirect
-      it_behaves_like "have success messages", "Welcome to the Sample App!"
+      it_behaves_like "success message", "Welcome to the Sample App!"
       # # ↓ なぜかNG
       # it_behaves_like "redirect to url", user_path(user)
       it { subject.call; expect(response).to redirect_to user_path(user) }
@@ -110,7 +98,7 @@ RSpec.describe UsersController, type: :controller do
         it_behaves_like "assigned @value is equal value", :user
         it_behaves_like "update data (increment:0)", User
         it_behaves_like "returns http status", :redirect
-        it_behaves_like "have success messages", "Profile updated"
+        it_behaves_like "success message", "Profile updated"
         # it_behaves_like "redirect to url", user_path(user)
         it { subject.call; expect(response).to redirect_to user_path(user) }
       end
@@ -163,7 +151,7 @@ RSpec.describe UsersController, type: :controller do
         it_behaves_like "delete data (increment:-1)", User
         it_behaves_like "returns http status", :redirect
         it_behaves_like "redirect to url","/users"
-        it_behaves_like "have success messages", "User deleted"
+        it_behaves_like "success message", "User deleted"
       end
     end
     # abnormal

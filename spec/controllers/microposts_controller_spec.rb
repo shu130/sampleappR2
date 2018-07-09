@@ -33,7 +33,7 @@ RSpec.describe MicropostsController, type: :controller do
         it_behaves_like "create data (increment:1)", Micropost
         it_behaves_like "returns http status", :redirect
         it_behaves_like "redirect to path", "/"
-        it_behaves_like "have success messages", "Micropost created"
+        it_behaves_like "success message", "Micropost created"
       end
       # abnomal
       context "with invalid attributes" do
@@ -54,7 +54,7 @@ RSpec.describe MicropostsController, type: :controller do
       subject { Proc.new { post :create, params: { micropost: valid_params } } }
       # include_context "redirect_to login_url with error messages"
       it_behaves_like "redirect to path", "/login"
-      it_behaves_like "have error messages", "Please log in"
+      it_behaves_like "error message", "Please log in"
       it_behaves_like "not change data (increment:0)", Micropost
     end
   end
@@ -71,7 +71,7 @@ RSpec.describe MicropostsController, type: :controller do
         it_behaves_like "delete data (increment:-1)", Micropost
         it_behaves_like "returns http status", :redirect
         it_behaves_like "redirect to path", "/"
-        it_behaves_like "have success messages", "Micropost deleted"
+        it_behaves_like "success message", "Micropost deleted"
       end
       # abnormal
       context "as wrong-user" do
@@ -86,7 +86,7 @@ RSpec.describe MicropostsController, type: :controller do
     context "when not logged-in" do
       subject { Proc.new { delete :destroy, params: { id: other_post.id } } }
       it_behaves_like "redirect to path", "/login"
-      it_behaves_like "have error messages", "Please log in"
+      it_behaves_like "error message", "Please log in"
       it_behaves_like "not change data (increment:0)", Micropost
     end
   end

@@ -9,7 +9,8 @@ gem 'puma',         '3.9.1'
 # gem 'faker',        '1.7.3'
 
 # 画像投稿
-gem 'carrierwave',             '1.1.0'
+# gem 'carrierwave',             '1.1.0'
+gem 'carrierwave'
 gem 'mini_magick',             '4.7.0'
 gem 'fog',                     '1.40.0'
 
@@ -61,7 +62,8 @@ end
 group :test do
   # gem "faker", "~> 1.4.3"
   # gem "faker"
-  gem 'capybara', '~> 2.15.2'
+  # gem 'capybara', '~> 2.15.2'
+  gem 'capybara'
   # gem "database_cleaner", "~> 1.3.0"
   # gem "database_cleaner"
   gem "launchy", "~> 2.4.2"

@@ -1,56 +1,103 @@
 require 'rails_helper'
 
 RSpec.feature "UsersIndex", type: :feature do
-  include LoginSupport
+
+  include SupportModule
+  include_context "setup"
+
   subject { page }
 
-  # リスト 10.48: ページネーションを含めたUsersIndexのテスト
-  # ページネーションでユーザが表示されること
-  describe "index" do
-    scenario "pagination list each user" do
-      user = create(:user)
-      login_as(user)
-      # before { visit users_path }
-      click_link "Users"
-      30.times { create(:other_user) }
-      User.paginate(page: 1).each do |user|
-        expect(page).to have_css("li", text: user.name)
+  describe "index", type: :request do
+    # 未ログインの場合 （before_action のテスト）
+    describe "login is necessary" do
+      context "non-login" do
+        subject { Proc.new { get users_path } }
+        it_behaves_like "error message", "Please log in"
+        it_behaves_like "redirect to path", "/login"
       end
     end
-
-    context "admin-user" do
-      scenario "delete user (increment: -1)" do
-        admin_user = create(:admin)
-        login_as(admin_user)
-        click_link "Users"
-        expect {
-          should have_link('delete', href: user_path(User.first))
-          should have_link('delete', href: user_path(User.second))
-          should_not have_link('delete', href: user_path(admin_user))
-          expect {
-            click_link('delete', match: :first)
-          }.to change(User, :count).by(-1)
-        }
-      end
-    end
-
-    context "non-addmin-user" do
-      scenario "not allow delete user (increment: 0)" do
-        user = create(:user)
+    # ページネーション
+    describe "pagination" do
+      # ページネーションでユーザが表示されること
+      scenario "list each user" do
+        # user = create(:user)
         login_as(user)
         click_link "Users"
-        expect {
-          should_not have_link('delete', href: user_path(User.first))
-          should_not have_link('delete', href: user_path(User.second))
-          should_not have_link('delete', href: user_path(user))
+        current_path(users_path)
+        should have_title("All users")
+        should have_css("h1", text: "All users")
+        # title_heading("All users")
+        # 30.times { create(:other_user) }
+        User.paginate(page: 1).each do |user|
+          expect(page).to have_css("li", text: user.name)
+        end
+      end
+    end
+
+    # 管理者ユーザ(admin)権限
+    describe "authorization of delete user" do
+      context "admin-user" do
+        # adminユーザはユーザの削除ができること
+        scenario "success delete (decrement: -1)" do
+          # admin_user = create(:admin)
+          login_as(admin)
+          click_link "Users"
+          current_path(users_path)
           expect {
+            have_link('delete', href: user_path(User.first))
+            have_link('delete', href: user_path(User.second))
+            not have_link('delete', href: user_path(admin))
             click_link('delete', match: :first)
+          }.to change(User, :count).by(-1)
+        end
+      end
+      # 非管理者ユーザ
+      # 一般ユーザはユーザの削除ができないこと
+      context "non-addmin-user" do
+        scenario "fail delete (decrement: 0)" do
+          # user = create(:user)
+          login_as(user)
+          click_link "Users"
+          current_path(users_path)
+          expect {
+            not have_link('delete', href: user_path(User.first))
+            not have_link('delete', href: user_path(User.second))
+            # not have_link('delete', href: user_path(user))
+            # click_link('delete', match: :first)
           }.to change(User, :count).by(0)
-        }
+        end
       end
     end
   end
 end
+
+
+# # アウトライン
+#
+#   describe "index"
+#     # 未ログインの場合 （before_action のテスト）
+#     describe "login is necessary"
+#       context "non-login"
+#         it_behaves_like "error message", "Please log in" # エラー
+#         it_behaves_like "redirect to path", "/login" # リダイレクト
+#     # ページネーション
+#     describe "pagination"
+#       # ページネーションでユーザが表示されること
+#       scenario "list each user"
+#
+#     # 管理者ユーザ(admin)権限
+#     describe "authorization of delete user"
+#       # 管理者ユーザ(admin)
+#       context "admin-user"
+#         # ユーザの削除ができること
+#         scenario "success delete (decrement: -1)"
+#       # 非管理者ユーザ
+#       context "non-addmin-user"
+#         # 一般ユーザはユーザの削除ができないこと
+#         scenario "fail delete (decrement: 0)"
+
+
+
 
 
 # require 'rails_helper'

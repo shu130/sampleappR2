@@ -66,31 +66,42 @@ module SupportModule
     # click_button "Save changes"
   end
 
+
+
+
                       # test_method
 
-  # def title_heading(title_str, heading_str)
-  #   should have_title(title_str)
-  #   should have_css('h1', text: heading_str) # or
-  #   # it { should have_content('All users') }
-  # end
+  # subject { page } + shouldaマッチャ
 
   def title_heading(titile, heading = title)
-    should have_title(title)
-    should have_css('h1', text: heading) # or
+    expect(page).to have_title(title)
+    expect(page).to have_css("h1", text: heading) # or
+    # should have_title(title)
+    # should have_css("h1", text: heading) # or
+    # expect(page).to have_selector("h1", text: heading) # or
+    # expect(page).to have_content('h1', text: heading) # or
     # it { should have_content('All users') }
   end
 
   def title_heading_of_profile_page(user)
     u = User.find_by(email: user.email)
-    should have_title(u.name)
-    should have_css('h1', text: u.name) # or
-    # it { should have_content('All users') }
+    expect(page).to have_title(u.name)
+    expect(page).to have_css('h1', text: u.name) # or
+    # expect(page).to have_content('h1', text: u.name)
   end
+  # def title_heading_of_profile_page(user)
+  #   u = User.find_by(email: user.email)
+  #   should have_title(u.name)
+  #   should have_css('h1', text: u.name) # or
+  #   # it { should have_content('All users') }
+  # end
 
   def current_path(path_name)
-    should have_current_path(path_name)
+    expect(page).to have_current_path(path_name)
+    # should have_current_path(path_name)
   end
 
+  # ログインフォーム
   def login_form_css
     # should have_current_path("/login")
     should have_css('label', text: 'Email')
@@ -100,6 +111,13 @@ module SupportModule
     should have_css('input#session_remember_me[type="checkbox"]')
     should have_css('label.checkbox.inline', text: 'Remember me')
     should have_button('Log in')
+  end
+
+  # マイクロポストフォーム
+  def micropost_form_css
+    should have_css('textarea#micropost_content')
+    should have_css('input#micropost_picture')
+    should have_button('Post')
   end
 
   def links_of_profile_page(user)

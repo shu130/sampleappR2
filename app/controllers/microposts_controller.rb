@@ -28,7 +28,6 @@ class MicropostsController < ApplicationController
     def micropost_params
       params[:micropost].permit(:content, :picture)
     end
-
     # before_action
     def right_user_check
       @micropost = current_user.microposts.find_by(id: params[:id])

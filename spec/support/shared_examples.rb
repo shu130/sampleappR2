@@ -1,4 +1,8 @@
                       # shared_examples
+
+                      # コントローラスペック or
+                      # フィーチャスペック
+
   # assigns
   shared_examples_for "assigned @value is equal value" do |value|
     it { subject.call; expect(value).to eq value }
@@ -16,18 +20,18 @@
     it { subject.call; expect(response).to redirect_to path }
   end
 
-  # # redirect to path
-  # shared_examples_for "redirect to user_path" do |user|
-  #   it { subject.call; expect(response).to redirect_to user_path(user) }
+  # # current path
+  # shared_examples_for "current path" do |path|
+  #   it { subject.call; expect(page).to have_current_path path }
   # end
 
   # flash
   # flash[:success]
-  shared_examples_for "have success messages" do |msg|
+  shared_examples_for "success message" do |msg|
     it { subject.call; expect(flash[:success]).to eq msg }
   end
   # flash[:danger]
-  shared_examples_for "have error messages" do |msg|
+  shared_examples_for "error message" do |msg|
     it { subject.call; expect(flash[:danger]).to eq msg }
   end
 

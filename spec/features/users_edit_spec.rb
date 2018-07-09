@@ -1,17 +1,30 @@
 require 'rails_helper'
 
 RSpec.feature "UsersEdit", type: :feature do
+
   include SupportModule
+  include_context "setup"
+
   subject { page }
 
-  describe "edit" do
+  describe "edit", type: :request do
+    # 未ログインの場合 （before_action のテスト）
+    describe "login is necessary" do
+      context "non-login" do
+        subject { Proc.new { get edit_user_path(user) } }
+        it_behaves_like "error message", "Please log in"
+        it_behaves_like "redirect to path", "/login"
+      end
+    end
     # normal
-    context "valid" do
-      scenario "edit profile" do
-        user = create(:user)
+    context "valid info" do
+      scenario "success edit profile" do
+        # user = create(:user)
         login_as(user)
         click_link "Settings"
         title_heading("Edit user", "Update your profile")
+        # should have_title("Edit user")
+        # should have_css("h1", text: "Update your profile")
         should have_link("change", href: "http://gravatar.com/emails")
         expect {
           fill_in_update_profile_form("New Name", "new@example.com")
@@ -23,9 +36,9 @@ RSpec.feature "UsersEdit", type: :feature do
       end
     end
     # abnormal
-    context "invalid" do
+    context "invalid info" do
       scenario "fail edit profile" do
-        user = create(:user)
+        # user = create(:user)
         login_as(user)
         click_link "Settings"
         expect {
@@ -38,12 +51,27 @@ RSpec.feature "UsersEdit", type: :feature do
       end
     end
 
+    # admin属性
+    describe "admin-attribute", type: :request do
+      # ↓shared_examples内で定義済み
+      # let(:admin_params) { attributes_for(:user, admin: true) }
+
+      # web経由で変更できないこと
+      scenario "not allow change via the web" do
+        patch user_path(user), params: { user: admin_params }
+        # patch user_path(user), params: admin_params
+        expect(user.reload).not_to be_admin
+        current_path(root_path)
+      end
+    end
+
     # フレンドリーフォワーディング
     describe "friendly forwarding" do
-      # ログイン後は、目的としていたページに遷移していること
+      # ログイン後は、
       context "after login (non-login-user)" do
+        # 目的としていたページに遷移していること
         scenario "render desired page" do
-          user = create(:user)
+          # user = create(:user)
           visit edit_user_path(user)
           error_flash("Please log in")
           current_path(login_path)
@@ -53,28 +81,34 @@ RSpec.feature "UsersEdit", type: :feature do
         end
       end
     end
-
-    # # admin属性をweb経由で変更できないこと
-    # describe "admin-attribute", type: :request do
-    #   let(:user) { create(:user) }
-    #   # let(:params) do
-    #   #   { user: { admin: true, password: user.password,
-    #   #             password_confirmation: user.password } }
-    #   # end
-    #   scenario "not allow change admin-attribute via the web" do
-    #     # user = create(:user)
-    #     params = { user: { admin: true, password: user.password,
-    #                       password_confirmation: user.password } }
-    #     # patch user_path(user), params
-    #     # page.driver.submit :patch, user_path(user), params {}
-    #     expect(user.reload).not_to be_admin
-    #   end
-    # end
   end
 end
 
 
-
+# # アウトライン
+#
+#   describe "edit"
+#     # 未ログインの場合 （before_action のテスト）
+#     describe "login is necessary"
+#       context "non-login"
+#         it_behaves_like "error message", "Please log in" # エラー
+#         it_behaves_like "redirect to path", "/login" # リダイレクト
+#     # 情報が valid の場合
+#     context "valid info"
+#       scenario "success edit profile"
+#     # 情報が invalid の場合
+#     context "invalid info"
+#       scenario "fail edit profile"
+#     # admin属性
+#     describe "admin-attribute"
+#       # admin属性をweb経由で変更できないこと
+#       scenario "not allow change via the web"
+#     # フレンドリーフォワーディング
+#     describe "friendly forwarding"
+#       # ログイン後は、
+#       context "after login (non-login-user)"
+#         # 目的としていたページに遷移していること
+#         scenario "render desired page"
 
 
 

@@ -27,7 +27,7 @@ RSpec.describe SessionsController, type: :controller do
       subject do
         Proc.new { post :create, params: { session: { email: user.email, password: "invalid" } } }
       end
-      it_behaves_like "have error messages", "Invalid email/password combination"
+      it_behaves_like "error message", "Invalid email/password combination"
       it_behaves_like "render template", :new
     end
   end

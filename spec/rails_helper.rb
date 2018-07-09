@@ -82,27 +82,27 @@ RSpec.configure do |config|
 
 end
 
-# # RSpec と Rails で Shoulda Matchers を使うことを宣言
-# Shoulda::Matchers.configure do |config|
-#   config.integrate do |with|
-#     with.test_framework :rspec
-#     with.library :rails
-#   end
-# end
-
-
-# https://qiita.com/tacumai/items/4bc60e7f89953c046949
+# RSpec と Rails で Shoulda Matchers を使うことを宣言
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|
-    # 今回はRspecを使うのでこのように設定
     with.test_framework :rspec
-
-    # shoulda-matchersを使いたいテストライブラリを指定
-    with.library :active_record
-    with.library :active_model
-    with.library :action_controller
-
-    # Or, choose the following (which implies all of the above):
     with.library :rails
   end
 end
+
+
+# # https://qiita.com/tacumai/items/4bc60e7f89953c046949
+# Shoulda::Matchers.configure do |config|
+#   config.integrate do |with|
+#     # 今回はRspecを使うのでこのように設定
+#     with.test_framework :rspec
+#
+#     # shoulda-matchersを使いたいテストライブラリを指定
+#     with.library :active_record
+#     with.library :active_model
+#     with.library :action_controller
+#
+#     # Or, choose the following (which implies all of the above):
+#     with.library :rails
+#   end
+# end

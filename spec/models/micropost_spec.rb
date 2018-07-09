@@ -7,20 +7,22 @@ RSpec.describe Micropost, type: :model do
   let!(:old_post) { create(:user_post, created_at: 1.day.ago) }
   let!(:new_post) { create(:user_post, created_at: 1.hour.ago) }
 
-  # subject { my_post }
+  subject { my_post }
 
+  it { should be_valid }
   it_behaves_like "Micropost-model respond to attribute or method"
 
   # validations
+  describe "validations" do
+    # 存在性 presence
+    it { is_expected.to validate_presence_of :user_id }
+    it { is_expected.to validate_presence_of :content }
 
-  # 存在性 presence
-  it { is_expected.to validate_presence_of :user_id }
-  it { is_expected.to validate_presence_of :content }
-
-  # 文字数
-  describe "when content is too long" do
-    before { my_post.content = "a" * 141 }
-    it { expect(my_post).not_to be_valid }
+    # 文字数 characters
+    describe "when content is too long" do
+      before { my_post.content = "a" * 141 }
+      it { expect(my_post).not_to be_valid }
+    end
   end
 
   describe "association" do
@@ -37,11 +39,7 @@ RSpec.describe Micropost, type: :model do
         expect(Micropost.where(id: micropost.id)).to be_empty
       end
     end
-
-
   end
-
-
 end
 
 

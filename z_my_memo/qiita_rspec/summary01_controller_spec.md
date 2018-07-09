@@ -316,11 +316,11 @@ spec/support/shared_examples.rb
   # フラッシュメッセージ
 
   # flash[:success]
-  shared_examples_for "have success messages" do |msg|
+  shared_examples_for "success message" do |msg|
     it { subject.call; expect(flash[:success]).to eq msg }
   end
   # flash[:danger]
-  shared_examples_for "have error messages" do |msg|
+  shared_examples_for "error message" do |msg|
     it { subject.call; expect(flash[:danger]).to eq msg }
   end
 
@@ -354,7 +354,7 @@ spec/support/shared_context.rb
   # ログイン画面に遷移し、ログインメッセージが出力される
   shared_context "redirect_to login_url with error messages" do
     it_behaves_like "redirect to url", "/login"
-    it_behaves_like "have error messages", "Please log in"
+    it_behaves_like "error message", "Please log in"
   end
 
   # in users_controller_spec
@@ -438,7 +438,7 @@ RSpec.describe UsersController, type: :controller do
       it_behaves_like "create data (increment:1)", User
       it_behaves_like "returns http status", :redirect
       it_behaves_like "redirect to url", "/users/8"
-      it_behaves_like "have success messages", "Welcome to the Sample App!"
+      it_behaves_like "success message", "Welcome to the Sample App!"
     end
     # abnomal
     context "with invalid attributes" do
@@ -482,7 +482,7 @@ RSpec.describe UsersController, type: :controller do
         it_behaves_like "update data (increment:0)", User
         it_behaves_like "returns http status", :redirect
         it_behaves_like "redirect to url", "/users/8"
-        it_behaves_like "have success messages", "Profile updated"
+        it_behaves_like "success message", "Profile updated"
       end
       # abnomal
       context "with invalid attributes" do
@@ -525,7 +525,7 @@ RSpec.describe UsersController, type: :controller do
         it_behaves_like "delete data (increment:-1)", User
         it_behaves_like "returns http status", :redirect
         it_behaves_like "redirect to url","/users"
-        it_behaves_like "have success messages", "User deleted"
+        it_behaves_like "success message", "User deleted"
       end
     end
     # abnormal
