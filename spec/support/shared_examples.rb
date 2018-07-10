@@ -74,7 +74,7 @@
 
                       # モデルスペック
 
-# Common
+# Userモデル
 
   shared_examples_for "User-model respond to attribute or method" do
     it { should respond_to(:name) }
@@ -87,10 +87,9 @@
     it { should respond_to(:activation_digest) }
     it { should respond_to(:admin) }
     it { should respond_to(:microposts) }
+    it { should respond_to(:feed) }
+    it { should respond_to(:relationships) }
   end
-
-# Userモデル
-
 
   # ボツ
   # shared_examples_for "non-presence" do |attr|
@@ -104,4 +103,14 @@
   shared_examples_for "Micropost-model respond to attribute or method" do
     it { should respond_to(:content) }
     it { should respond_to(:user_id) }
+  end
+
+# Relationshipモデル
+
+  # shared_examples_for "Relationship-model respond to method" do
+  shared_examples_for "follower-methods" do
+    it { should respond_to(:follower) }
+    it { should respond_to(:followed) }
+    # its(:follower) { should eq follower }
+    # its(:followed) { should eq followed }
   end

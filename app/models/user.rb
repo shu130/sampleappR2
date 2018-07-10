@@ -2,6 +2,16 @@ class User < ApplicationRecord
 
   has_many :microposts, dependent: :destroy
 
+  # active
+  has_many :active_relationships, class_name: "Relationship",
+            foreign_key: "follower_id", dependent: :destroy
+  # passive
+  has_many :passive_relationships, class_name: "Relationship",
+            foreign_key: "followed_id", dependent: :destroy
+
+  has_many :following, through: :active_relationships, source: :followed
+  has_many :follower,  through: :passive_relationships, source: :follower
+
   attr_accessor :remember_token, :activation_token
 
   before_save :email_downcase
@@ -55,8 +65,28 @@ class User < ApplicationRecord
     update_attribute(:activated_at, Time.zone.now)
   end
 
+  # マイクロポストフィード
+  
   def feed
-    Micropost.where("user_id = ?", id)
+    # Micropost.where("user_id = ?", self.id)
+    Micropost.where("user_id IN (?) OR user_id = ?", self.following_ids, self.id)
+
+    Micropost.where("user_id IN (:following_ids) OR user_id = :user_id",
+      following_ids: self.following_ids, user_id: self.id)
+  end
+
+  # リレーション関係
+
+  def follow(other_user)
+    self.active_relationships.create(followed_id: other_user.id)
+  end
+
+  def unfollow(other_user)
+    self.active_relationships.find_by(followed_id: other_user.id).destroy
+  end
+
+  def following?(other_user)
+    self.following.include?(other_user)
   end
 
   private
