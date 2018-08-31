@@ -3,42 +3,185 @@ require 'rails_helper'
 RSpec.feature "UsersSignup", type: :feature do
 
   include SupportModule
-  subject { page }
+  # subject { page }
 
   describe "signup" do
-    context "valid" do
-      scenario "success create new-user (increment: 1)" do
-        visit signup_path
-        expect {
-          # fill_in_signup_valid
-          fill_in_signup_form(:user)
-          click_button "Create my account"
-          success_flash "Welcome to the Sample App!"
-          # サインアップ後は profile-page へ遷移すること
-          current_path(user_path(User.last))
-          title_heading_of_profile_page(User.last)
-        }.to change(User, :count).by(1)
-      end
+    before { visit "/signup" }
+    it_behaves_like "signup-form have right css"
+    # normal
+    # valid な情報の場合
+    context "valid info" do
+      # 成功 (increment: 1)
+      it_behaves_like "success create user"
     end
     # abnomal
-    context "invalid" do
-      scenario "fail create new-user (increment: 0)" do
-        visit signup_path
-        expect {
-          # fill_in_signup_invalid
-          fill_in_signup_form(:user, invalid: true)
-          click_button "Create my account"
-          error_flash "errors"
-          # error_flash
-          current_path(users_path)
-          # title_heading("Sign up")
-          should have_title("Sign up")
-          should have_css("h1", text: "Sign up")
-        }.to change(User, :count).by(0)
-      end
+    # invalid な情報の場合
+    context "invalid info" do
+      # 失敗 (increment: 0)
+      it_behaves_like "fail create user"
     end
   end
 end
+
+
+# # アウトライン
+# # spec/features/users_signup_spec.rb
+#
+# RSpec.feature "UsersSignup", type: :feature do
+#
+#   # サインアップページ
+#   describe "signup"
+#     # signupフォームが正しいこと
+#     it_behaves_like "sign up form have right css"
+#
+#     # 情報が valid
+#     context "valid info"
+#       # 成功 (increment: 1)
+#       it_behaves_like "success create user"
+#       # successメッセージがあること
+#       scenario "success messages"
+#       # profile-page へリダイレクトすること
+#       scenario "redirect to profile-page"
+#
+#     # 情報が invalid
+#     context "invalid info"
+#       # 失敗 (increment: 0)
+#       it_behaves_like "fail create user"
+#       # errorメッセージがあること
+#       scenario "error messages"
+#       # サインアップページのまま
+#       scenario "render signup-page"
+# end
+
+
+
+
+
+# require 'rails_helper'
+#
+# RSpec.feature "UsersSignup", type: :feature do
+#
+#   include SupportModule
+#   # subject { page }
+#
+#   describe "signup" do
+#     before { visit "/signup" }
+#     it_behaves_like "signup-form have right css"
+#     # normal
+#     # valid な情報の場合
+#     context "valid info" do
+#       # 成功 (increment: 1)
+#       it_behaves_like "success create user"
+#       # 成功メッセージ
+#       # scenario "success messages" do
+#       #   expect { success_flash "Welcome to the Sample App!" }
+#       # end
+#       # it { expect(page).to have_css("div.alert.alert-success", text: "Welcome to the Sample App!") }
+#       # サインアップ後は profile-page へ遷移すること
+#       scenario "redirect to profile-page" do
+#         expect {
+#           have_current_path(user_path(User.last))
+#           have_title(User.last.name)
+#           have_selector('h1', text: User.last.name)
+#         }
+#       end
+#     end
+#     # abnomal
+#     # invalid な情報の場合
+#     context "invalid info" do
+#       # 失敗 (increment: 0)
+#       it_behaves_like "fail create user"
+#       # # 失敗メッセージ
+#       # scenario "error messages" do
+#       #   expect { error_flash "errors" }
+#       # end
+#       # サインアップページのまま
+#       scenario "render signup-page" do
+#         expect {
+#           have_title("Sign up")
+#           have_css("h1", text: "Sign up")
+#         }
+#       end
+#     end
+#   end
+# end
+
+
+
+
+
+
+
+
+
+
+# require 'rails_helper'
+#
+# RSpec.feature "UsersSignup", type: :feature do
+#
+#   include SupportModule
+#   subject { page }
+#
+#   describe "signup" do
+#   # describe "signup", type: :request do
+#     scenario "signup-form is correct" do
+#       # visit signup_path  # or
+#       visit "/signup"
+#       signup_form_css
+#     end
+#     context "valid info" do
+#       scenario "success create new-user (increment: 1)" do
+#         # visit signup_path
+#         expect {
+#           visit signup_path
+#           fill_in_signup_form(:user)
+#           click_button "Create my account"
+#           success_flash "Welcome to the Sample App!"
+#           # サインアップ後は profile-page へ遷移すること
+#           should have_current_path(user_path(User.last))
+#           should have_title(User.last.name)
+#           should have_selector('h1', text: User.last.name)
+#         }.to change(User, :count).by(1)
+#       end
+#     end
+#     # abnomal
+#     context "invalid info" do
+#       scenario "fail create new-user (increment: 0)" do
+#         # visit signup_path
+#         expect {
+#           visit signup_path
+#           fill_in_signup_form(:user, invalid: true)
+#           click_button "Create my account"
+#           error_flash "errors"
+#           should have_title("Sign up")
+#           should have_css("h1", text: "Sign up")
+#         }.to change(User, :count).by(0)
+#       end
+#     end
+#   end
+# end
+
+
+# # アウトライン
+#
+#   # サインアップページ
+#   describe "signup"
+#     # signupフォームが正しいこと
+#     scenario "signup-form is correct"
+#     # 情報が valid
+#     context "valid info"
+#       # 成功 user が (increment: 1) であること
+#       scenario "success create new-user (increment: 1)"
+#         # successメッセージがあること
+#         # profile-page へリダイレクトすること
+#         # title, heading の表示が正しいこと
+#     # 情報が invalid
+#     context "invalid info"
+#       # 失敗 user が (increment: 0) であること
+#       scenario "fail create new-user (increment: 0)"
+#         # errorメッセージがあること
+#         # サインアップページのままで、リダイレクトしていない
+#         # title, heading の表示が正しいこと
 
 
 

@@ -7,15 +7,16 @@ RSpec.describe UsersController, type: :controller do
   describe "GET #index" do
     subject { Proc.new { get :index } }
     # normal
-    context "when logged-in" do
-      before(:each) { log_in_as user }
+    context "when login" do
+      before { log_in_as user }
       it_behaves_like "returns http status", :success
-      it_behaves_like "assigned @value is equal value", :other_users
+      it_behaves_like "assigned @value is equal value", :users
       it_behaves_like "render template", :index
     end
     # abnormal
-    context "when not logged-in" do
-      it_behaves_like "redirect_to login_url with 'Please log in'"
+    context "when non-login" do
+      it_behaves_like "error flash", "Please log in"
+      it_behaves_like "redirect to path", "/login"
     end
   end
 
@@ -44,7 +45,7 @@ RSpec.describe UsersController, type: :controller do
       it_behaves_like "assigned @value is equal value", :user
       it_behaves_like "create data (increment:1)", User
       it_behaves_like "returns http status", :redirect
-      it_behaves_like "success message", "Welcome to the Sample App!"
+      it_behaves_like "success flash", "Welcome to the Sample App!"
       # # ↓ なぜかNG
       # it_behaves_like "redirect to url", user_path(user)
       it { subject.call; expect(response).to redirect_to user_path(user) }
@@ -68,8 +69,8 @@ RSpec.describe UsersController, type: :controller do
   describe "GET #edit" do
     subject { Proc.new { get :edit, params: { id: user.id } } }
     # normal
-    context "when logged-in" do
-      before(:each) { log_in_as user }
+    context "when login" do
+      before { log_in_as user }
       # normal
       context "as rigtht_user" do
         it_behaves_like "returns http status", :success
@@ -83,30 +84,40 @@ RSpec.describe UsersController, type: :controller do
       end
     end
     # abnormal
-    context "when not logged-in" do
-      it_behaves_like "redirect_to login_url with 'Please log in'"
+    context "when non-login" do
+      it_behaves_like "error flash", "Please log in"
+      it_behaves_like "redirect to path", "/login"
     end
   end
 
   describe "PATCH #update" do
     # normal
-    context "when logged-in" do
-      before(:each) { log_in_as user }
+    context "when login" do
+      before { log_in_as user }
       # normal
       context "with valid attributes" do
         subject { Proc.new { patch :update, params: { id: user.id, user: update_params_1 } } }
         it_behaves_like "assigned @value is equal value", :user
         it_behaves_like "update data (increment:0)", User
         it_behaves_like "returns http status", :redirect
-        it_behaves_like "success message", "Profile updated"
+        it_behaves_like "success flash", "Profile updated"
+        it "success update" do
+          subject.call; expect(user.reload.name).to eq update_params_1[:name]
+        end
+        it "redirect to user path" do
+          subject.call; expect(response).to redirect_to user_path(user)
+        end
         # it_behaves_like "redirect to url", user_path(user)
-        it { subject.call; expect(response).to redirect_to user_path(user) }
+        # it { subject.call; expect(response).to redirect_to user_path(user) }
       end
       # abnomal
       context "with invalid attributes" do
         subject { Proc.new { patch :update, params: { id: user.id, user: invalid_params } } }
         it_behaves_like "not change data (increment:0)", User
         it_behaves_like "render template", :edit
+        it "fail update" do
+          subject.call; expect(user.reload.name).not_to eq invalid_params[:name]
+        end
         # # ↓ なぜかNG
         # it_behaves_like "have error 'can't be blank'", :name
       end
@@ -117,17 +128,21 @@ RSpec.describe UsersController, type: :controller do
       end
     end
     # abnormal
-    context "when not logged-in" do
+    context "when non-login" do
       # it_behaves_like "redirect_to login_url with 'Please log in'"
+      it_behaves_like "error flash", "Please log in"
+      it_behaves_like "redirect to path", "/login"
       # abnormal
       context "as wrong-user" do
         subject { Proc.new { patch :update, params: { id: other_user.id, user: update_params_2 } } }
-
-        # it_behaves_like "not change data (increment:0)", User
-        # it_behaves_like "redirect to url", "/login"
-        it_behaves_like "redirect_to login_url with 'Please log in'"
         # 他人のユーザ情報は更新（update）できないこと
-        it_behaves_like "not allow update other-user's-profile"
+        it "fail update" do
+          subject.call; expect(other_user.reload.name).not_to eq update_params_2[:name]
+        end
+        it_behaves_like "update data (increment:0)", User
+        it_behaves_like "returns http status", :redirect
+        it_behaves_like "redirect to path", "/"
+        # it_behaves_like "not allow update other-user's-profile"
       end
     end
   end
@@ -135,32 +150,72 @@ RSpec.describe UsersController, type: :controller do
   describe "DELETE #destroy" do
     subject { Proc.new { delete :destroy, params: { id: other_user.id } } }
     # normal
-    context "when logged-in" do
+    context "when login" do
       context "as non-admin-user" do
-        before(:each) { log_in_as user }
+        before { log_in_as user }
         it_behaves_like "returns http status", :redirect
-        it_behaves_like "redirect to url","/"
+        it_behaves_like "redirect to path", "/"
         it_behaves_like "assigned @value is equal value", :other_user
         # it_behaves_like "delete data (increment:-1)", User
         it_behaves_like "not change data (increment:0)", User
       end
       context "as admin-user" do
-        before(:each) { log_in_as admin }
+        before { log_in_as admin }
         # it_behaves_like "returns http status", :success
         it_behaves_like "assigned @value is equal value", :admin
         it_behaves_like "delete data (increment:-1)", User
         it_behaves_like "returns http status", :redirect
-        it_behaves_like "redirect to url","/users"
-        it_behaves_like "success message", "User deleted"
+        it_behaves_like "redirect to path", "/users"
+        it_behaves_like "success flash", "User deleted"
       end
     end
     # abnormal
-    context "when not logged-in" do
-      it_behaves_like "redirect_to login_url with 'Please log in'"
+    context "when non-login" do
+      # it_behaves_like "redirect_to login_url with 'Please log in'"
+      it_behaves_like "error flash", "Please log in"
+      it_behaves_like "redirect to path", "/login"
       it_behaves_like "not change data (increment:0)", User
     end
   end
+
+  #（自分が）フォロー中のユーザの表示
+  describe "GET #following" do
+    subject { Proc.new { get :following, params: { id: user.id } } }
+    # normal
+    context "when login" do
+      before { log_in_as user }
+      it_behaves_like "returns http status", :success
+      it_behaves_like "render template", :show_follow
+      it { subject.call; expect(response).to redirect_to following_user_path(user) }
+    end
+    # abnormal
+    context "when non-login" do
+      it_behaves_like "error flash", "Please log in"
+      it_behaves_like "redirect to path", "/login"
+    end
+  end
+  #（自分を）フォローしているユーザの表示
+  describe "GET #followers" do
+    subject { Proc.new { get :followers, params: { id: user.id } } }
+    # normal
+    context "when login" do
+      before { log_in_as user }
+      it_behaves_like "returns http status", :success
+      it_behaves_like "render template", :show_follow
+      it { subject.call; expect(response).to redirect_to followers_user_path(user) }
+    end
+    # abnormal
+    context "when non-login" do
+      it_behaves_like "error flash", "Please log in"
+      it_behaves_like "redirect to path", "/login"
+    end
+  end
+
 end
+
+# アウトライン
+
+
 
 
 

@@ -8,55 +8,55 @@ RSpec.feature "UsersLogin", type: :feature do
   subject { page }
 
   describe "log in" do
+    before { visit "/login" }
     # loginフォームが正しいこと
-    scenario "login-form is correct" do
-      visit login_path
-      login_form_css  # support_module
-    end
+    it_behaves_like "login-form have right css"
     # ログイン情報が 有効
     context "valid info" do
       scenario "success log in" do
         # user = create(:user)
-        visit login_path
+        visit "/login"
         fill_in_login_form(user) # support_module
         click_button "Log in"
-        title_heading_of_profile_page(user) # support_module
-        current_path(user_path(User.last)) # support_module
+        # title_heading_of_profile_page(user) # support_module
+        should have_title(user.name)
+        should have_css('h1', text: user.name)
+        should have_current_path(user_path(user))
+        # current_path(user_path(User.last)) # support_module
       end
     end
     # ログイン情報が 無効
     context "invalid info" do
       scenario "fail log in" do
-        # user = create(:user)
         visit login_path
         fill_in_login_form(user, invalid: true)
         click_button "Log in"
-        error_flash "Invalid email/password combination"
+        error_messages "Invalid email/password combination"
         # title_heading("Log in")
         should have_title("Log in")
         should have_css("h1", text: "Log in")
-        current_path(login_path)
+        should have_current_path("/login")
       end
     end
   end
 
   # ログアウト
-  # HTTPリクエストを直接送るので、type: :request オプションをつける
-  describe "log out", type: :request do
+  describe "log out" do
     # ログアウトが正常にできること
     describe "success log out" do
       # 同じサイトを 複数tab/window で開いている状態をシュミレート
       context "when open in some browser-tab(or window)" do
         # "Log out" をクリック １回目をシュミレート
-        scenario "1st time" do
+        scenario "1st time log out" do
           login_as(user)
           click_link "Log out"
-          current_path(root_path)
+          should have_current_path(root_path)
         end
-         # "Log out" をクリック ２回目をシュミレート
-        scenario "2nd time" do
+        # "Log out" をクリック ２回目をシュミレート
+        # HTTPリクエストを直接送るので、type: :request オプションをつける
+        scenario "2nd time log out", type: :request do
           delete logout_path(user)
-          current_path(root_path)
+          should have_current_path(root_path)
         end
       end
     end
@@ -65,16 +65,19 @@ end
 
 
 # # アウトライン
+# # spec/features/users_login_spec.rb
+
+# RSpec.feature "UsersLogin", type: :feature do
 #
-#   # ログイン
+#   # ログインページ
 #   describe "log in"
 #     # loginフォームが正しいこと
-#     scenario "login-form is correct"
-#     # 情報が 有効
+#     it_behaves_like "log in form have right css"
+#     # 情報が valid
 #     context "valid info"
 #       # 成功
 #       scenario "success log in"
-#     # 情報が 無効
+#     # 情報が invalid
 #     context "invalid info"
 #       # 失敗
 #       scenario "fail log in"
@@ -85,9 +88,153 @@ end
 #       # 同じサイトを 複数tab/window で開いている状態をシュミレート
 #       context "when open in some browser-tab(or window)"
 #       # "Log out" をクリック １回目をシュミレート
-#       scenario "1st time"
+#       scenario "1st time log out"
 #       # "Log out" をクリック ２回目をシュミレート
-#       scenario "2nd time"
+#       scenario "2nd time log out"
+# end
+
+
+
+# require 'rails_helper'
+#
+# RSpec.feature "UsersLogin", type: :feature do
+#
+#   include SupportModule
+#   include_context "setup"
+#
+#   subject { page }
+#
+#   describe "log in" do
+#     # loginフォームが正しいこと
+#     scenario "login-form is correct" do
+#       visit login_path
+#       login_form_css  # support_module
+#     end
+#     # ログイン情報が 有効
+#     context "valid info" do
+#       scenario "success log in" do
+#         # user = create(:user)
+#         visit "/login"
+#         fill_in_login_form(user) # support_module
+#         click_button "Log in"
+#         # title_heading_of_profile_page(user) # support_module
+#         should have_title(user.name)
+#         should have_selector('h1', text: user.name)
+#         should have_current_path(user_path(user))
+#         # current_path(user_path(User.last)) # support_module
+#       end
+#     end
+#     # ログイン情報が 無効
+#     context "invalid info" do
+#       scenario "fail log in" do
+#         # user = create(:user)
+#         visit login_path
+#         fill_in_login_form(user, invalid: true)
+#         click_button "Log in"
+#         error_flash "Invalid email/password combination"
+#         # title_heading("Log in")
+#         should have_title("Log in")
+#         should have_css("h1", text: "Log in")
+#         should have_current_path("/login")
+#       end
+#     end
+#   end
+#
+#   # ログアウト
+#   # HTTPリクエストを直接送るので、type: :request オプションをつける
+#   describe "log out", type: :request do
+#     # ログアウトが正常にできること
+#     describe "success log out" do
+#       # 同じサイトを 複数tab/window で開いている状態をシュミレート
+#       context "when open in some browser-tab(or window)" do
+#         # "Log out" をクリック １回目をシュミレート
+#         scenario "1st time log out" do
+#           login_as(user)
+#           click_link "Log out"
+#           should have_current_path(root_path)
+#         end
+#          # "Log out" をクリック ２回目をシュミレート
+#         scenario "2nd time log out" do
+#           delete logout_path(user)
+#           should have_current_path(root_path)
+#         end
+#       end
+#     end
+#   end
+# end
+
+
+
+
+
+
+
+# require 'rails_helper'
+#
+# RSpec.feature "UsersLogin", type: :feature do
+#
+#   include SupportModule
+#   include_context "setup"
+#
+#   subject { page }
+#
+#   describe "log in" do
+#     # loginフォームが正しいこと
+#     scenario "login-form is correct" do
+#       visit login_path
+#       login_form_css  # support_module
+#     end
+#     # ログイン情報が 有効
+#     context "valid info" do
+#       scenario "success log in" do
+#         # user = create(:user)
+#         visit "/login"
+#         fill_in_login_form(user) # support_module
+#         click_button "Log in"
+#         title_heading_of_profile_page(user) # support_module
+#         current_path(user_path(User.last)) # support_module
+#       end
+#     end
+#     # ログイン情報が 無効
+#     context "invalid info" do
+#       scenario "fail log in" do
+#         # user = create(:user)
+#         visit login_path
+#         fill_in_login_form(user, invalid: true)
+#         click_button "Log in"
+#         error_flash "Invalid email/password combination"
+#         # title_heading("Log in")
+#         should have_title("Log in")
+#         should have_css("h1", text: "Log in")
+#         current_path(login_path)
+#       end
+#     end
+#   end
+#
+#   # ログアウト
+#   # HTTPリクエストを直接送るので、type: :request オプションをつける
+#   describe "log out", type: :request do
+#     # ログアウトが正常にできること
+#     describe "success log out" do
+#       # 同じサイトを 複数tab/window で開いている状態をシュミレート
+#       context "when open in some browser-tab(or window)" do
+#         # "Log out" をクリック １回目をシュミレート
+#         scenario "1st time log out" do
+#           login_as(user)
+#           click_link "Log out"
+#           current_path(root_path)
+#         end
+#          # "Log out" をクリック ２回目をシュミレート
+#         scenario "2nd time log out" do
+#           delete logout_path(user)
+#           current_path(root_path)
+#         end
+#       end
+#     end
+#   end
+# end
+
+
 
 
 

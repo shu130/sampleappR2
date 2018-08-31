@@ -60,46 +60,51 @@ include ApplicationHelper
 #                                         remember_me: remember_me } }
 # end
 
-# chap09
-def test_login_no_capybara(user)
-  # app/models/user.rb
-  #   remember_in_db
-  remember_token = User.new_token
-  user.update_attribute(:remember_digest, User.digest(remember_token))
-  # app/helpers/sessions_helper.rb
-  #   remember_in_db_ck
-  cookies.signed[:user_id] = user.id
-  cookies[:remember_token] = remember_token
-end
 
-def is_logged_in?
-  !session[:user_id].nil?
-end
 
-def log_in_as(user)
-  session[:user_id] = user.id
-end
+# # chap09
+# def test_login_no_capybara(user)
+#   # app/models/user.rb
+#   #   remember_in_db
+#   remember_token = User.new_token
+#   user.update_attribute(:remember_digest, User.digest(remember_token))
+#   # app/helpers/sessions_helper.rb
+#   #   remember_in_db_ck
+#   cookies.signed[:user_id] = user.id
+#   cookies[:remember_token] = remember_token
+# end
+#
 
-# リスト9.6 ユーザーがサインインするためのテストヘルパー
-def test_login(user, options={remember_me: false, no_capybara: false})
-# def test_login(user, options={no_capybara: false})
-  if options[:no_capybara]
-    # app/models/user.rb
-    #   remember_in_db
-    remember_token = User.new_token
-    user.update_attribute(:remember_digest, User.digest(remember_token))
-    # app/helpers/sessions_helper.rb
-    #   remember_in_db_ck
-    # cookies.signed[:user_id] = user.id
-    cookies[:remember_token] = remember_token
-  else
-    visit login_path
-    fill_in "Email",    with: user.email
-    fill_in "Password", with: user.password
-    # check   'session_remember_me' if options[:remember_me]
-    click_button "Log in"
-  end
-end
+# def is_logged_in?
+#   !session[:user_id].nil?
+# end
+#
+# def log_in_as(user)
+#   session[:user_id] = user.id
+# end
+
+#
+# # リスト9.6 ユーザーがサインインするためのテストヘルパー
+# def test_login(user, options={remember_me: false, no_capybara: false})
+# # def test_login(user, options={no_capybara: false})
+#   if options[:no_capybara]
+#     # app/models/user.rb
+#     #   remember_in_db
+#     remember_token = User.new_token
+#     user.update_attribute(:remember_digest, User.digest(remember_token))
+#     # app/helpers/sessions_helper.rb
+#     #   remember_in_db_ck
+#     # cookies.signed[:user_id] = user.id
+#     cookies[:remember_token] = remember_token
+#   else
+#     visit login_path
+#     fill_in "Email",    with: user.email
+#     fill_in "Password", with: user.password
+#     # check   'session_remember_me' if options[:remember_me]
+#     click_button "Log in"
+#   end
+# end
+
 
 # 参考もと
 # リスト9.6 ユーザーがサインインするためのテストヘルパー

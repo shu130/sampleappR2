@@ -7,61 +7,51 @@ RSpec.feature "UsersEdit", type: :feature do
 
   subject { page }
 
-  describe "edit", type: :request do
-    # 未ログインの場合 （before_action のテスト）
-    describe "login is necessary" do
-      context "non-login" do
-        subject { Proc.new { get edit_user_path(user) } }
-        it_behaves_like "error message", "Please log in"
-        it_behaves_like "redirect to path", "/login"
-      end
-    end
+  # 未ログインのテスト （before_action のテスト）
+  # authorization_spec.rb にて（別ファイル）
+
+  describe "edit" do
     # normal
     context "valid info" do
       scenario "success edit profile" do
         # user = create(:user)
         login_as(user)
         click_link "Settings"
-        title_heading("Edit user", "Update your profile")
-        # should have_title("Edit user")
-        # should have_css("h1", text: "Update your profile")
+        # title_heading("Edit user", "Update your profile")
+        should have_title("Edit user")
+        should have_css("h1", text: "Update your profile")
         should have_link("change", href: "http://gravatar.com/emails")
         expect {
           fill_in_update_profile_form("New Name", "new@example.com")
           click_button "Save changes"
-          expect(user.reload.name).to eq "New Name"
-          expect(user.reload.email).to eq "new@example.com"
-          success_flash("Profile updated")
         }.to change(User, :count).by(0)
+        expect(user.reload.name).to eq "New Name"
+        expect(user.reload.email).to eq "new@example.com"
+        success_messages("Profile updated")
       end
     end
     # abnormal
     context "invalid info" do
       scenario "fail edit profile" do
-        # user = create(:user)
         login_as(user)
         click_link "Settings"
         expect {
           fill_in_update_profile_form("", "foo@")
           click_button "Save changes"
-          expect(user.reload.name).not_to eq ""
-          expect(user.reload.email).not_to eq "foo@"
-          error_flash("errors")
         }.to change(User, :count).by(0)
+        expect(user.reload.name).not_to eq ""
+        expect(user.reload.email).not_to eq "foo@"
+        error_messages("errors")
       end
     end
 
     # admin属性
     describe "admin-attribute", type: :request do
-      # ↓shared_examples内で定義済み
-      # let(:admin_params) { attributes_for(:user, admin: true) }
-
       # web経由で変更できないこと
       scenario "not allow change via the web" do
         patch user_path(user), params: { user: admin_params }
-        # patch user_path(user), params: admin_params
         expect(user.reload).not_to be_admin
-        current_path(root_path)
+        should have_current_path("/")
       end
     end
 
@@ -71,13 +61,13 @@ RSpec.feature "UsersEdit", type: :feature do
       context "after login (non-login-user)" do
         # 目的としていたページに遷移していること
         scenario "render desired page" do
-          # user = create(:user)
           visit edit_user_path(user)
-          error_flash("Please log in")
-          current_path(login_path)
+          error_messages("Please log in")
+          should have_current_path("/login")
           login_as(user)
-          current_path(edit_user_path(user))
-          title_heading("Edit user", "Update your profile")
+          should have_current_path(edit_user_path(user))
+          should have_title("Edit user")
+          should have_css("h1", text: "Update your profile")
         end
       end
     end
@@ -86,13 +76,13 @@ end
 
 
 # # アウトライン
+# # spec/features/users_edit_spec.rb
+# RSpec.feature "UsersEdit", type: :feature do
+#
+#   # 未ログインのテスト （before_action のテスト）
+#   # authorization_spec.rb にて（別ファイル）
 #
 #   describe "edit"
-#     # 未ログインの場合 （before_action のテスト）
-#     describe "login is necessary"
-#       context "non-login"
-#         it_behaves_like "error message", "Please log in" # エラー
-#         it_behaves_like "redirect to path", "/login" # リダイレクト
 #     # 情報が valid の場合
 #     context "valid info"
 #       scenario "success edit profile"
@@ -109,7 +99,182 @@ end
 #       context "after login (non-login-user)"
 #         # 目的としていたページに遷移していること
 #         scenario "render desired page"
+# end
 
+
+
+# require 'rails_helper'
+#
+# RSpec.feature "UsersEdit", type: :feature do
+#
+#   include SupportModule
+#   include_context "setup"
+#
+#   subject { page }
+#
+#   describe "edit" do
+#     # 未ログインの場合 （before_action のテスト）
+#     describe "login is necessary", type: :request do
+#       context "when non-login" do
+#         subject { Proc.new { get edit_user_path(user) } }
+#         it_behaves_like "error flash", "Please log in"
+#         it_behaves_like "redirect to path", "/login"
+#       end
+#     end
+#     # normal
+#     context "valid info" do
+#       scenario "success edit profile" do
+#         # user = create(:user)
+#         login_as(user)
+#         click_link "Settings"
+#         # title_heading("Edit user", "Update your profile")
+#         should have_title("Edit user")
+#         should have_css("h1", text: "Update your profile")
+#         should have_link("change", href: "http://gravatar.com/emails")
+#         expect {
+#           fill_in_update_profile_form("New Name", "new@example.com")
+#           click_button "Save changes"
+#           expect(user.reload.name).to eq "New Name"
+#           expect(user.reload.email).to eq "new@example.com"
+#           success_flash("Profile updated")
+#         }.to change(User, :count).by(0)
+#       end
+#     end
+#     # abnormal
+#     context "invalid info" do
+#       scenario "fail edit profile" do
+#         # user = create(:user)
+#         login_as(user)
+#         click_link "Settings"
+#         expect {
+#           fill_in_update_profile_form("", "foo@")
+#           click_button "Save changes"
+#           expect(user.reload.name).not_to eq ""
+#           expect(user.reload.email).not_to eq "foo@"
+#           error_flash("errors")
+#         }.to change(User, :count).by(0)
+#       end
+#     end
+#
+#     # admin属性
+#     describe "admin-attribute", type: :request do
+#       # web経由で変更できないこと
+#       scenario "not allow change via the web" do
+#         patch user_path(user), params: { user: admin_params }
+#         expect(user.reload).not_to be_admin
+#         should have_current_path(root_path)
+#       end
+#     end
+#
+#     # フレンドリーフォワーディング
+#     describe "friendly forwarding" do
+#       # ログイン後は、
+#       context "after login (non-login-user)" do
+#         # 目的としていたページに遷移していること
+#         scenario "render desired page" do
+#           visit edit_user_path(user)
+#           error_flash("Please log in")
+#           should have_current_path("/login")
+#           login_as(user)
+#           should have_current_path(edit_user_path(user))
+#           should have_title("Edit user")
+#           should have_css("h1", text: "Update your profile")
+#         end
+#       end
+#     end
+#   end
+# end
+
+
+
+
+
+
+# require 'rails_helper'
+#
+# RSpec.feature "UsersEdit", type: :feature do
+#
+#   include SupportModule
+#   include_context "setup"
+#
+#   subject { page }
+#
+#   describe "edit", type: :request do
+#     # 未ログインの場合 （before_action のテスト）
+#     describe "login is necessary" do
+#       context "when non-login" do
+#         subject { Proc.new { get edit_user_path(user) } }
+#         it_behaves_like "error flash", "Please log in"
+#         it_behaves_like "redirect to path", "/login"
+#       end
+#     end
+#     # normal
+#     context "valid info" do
+#       scenario "success edit profile" do
+#         # user = create(:user)
+#         login_as(user)
+#         click_link "Settings"
+#         title_heading("Edit user", "Update your profile")
+#         # should have_title("Edit user")
+#         # should have_css("h1", text: "Update your profile")
+#         should have_link("change", href: "http://gravatar.com/emails")
+#         expect {
+#           fill_in_update_profile_form("New Name", "new@example.com")
+#           click_button "Save changes"
+#           expect(user.reload.name).to eq "New Name"
+#           expect(user.reload.email).to eq "new@example.com"
+#           success_flash("Profile updated")
+#         }.to change(User, :count).by(0)
+#       end
+#     end
+#     # abnormal
+#     context "invalid info" do
+#       scenario "fail edit profile" do
+#         # user = create(:user)
+#         login_as(user)
+#         click_link "Settings"
+#         expect {
+#           fill_in_update_profile_form("", "foo@")
+#           click_button "Save changes"
+#           expect(user.reload.name).not_to eq ""
+#           expect(user.reload.email).not_to eq "foo@"
+#           error_flash("errors")
+#         }.to change(User, :count).by(0)
+#       end
+#     end
+#
+#     # admin属性
+#     describe "admin-attribute", type: :request do
+#       # ↓shared_examples内で定義済み
+#       # let(:admin_params) { attributes_for(:user, admin: true) }
+#
+#       # web経由で変更できないこと
+#       scenario "not allow change via the web" do
+#         patch user_path(user), params: { user: admin_params }
+#         # patch user_path(user), params: admin_params
+#         expect(user.reload).not_to be_admin
+#         current_path(root_path)
+#       end
+#     end
+#
+#     # フレンドリーフォワーディング
+#     describe "friendly forwarding" do
+#       # ログイン後は、
+#       context "after login (non-login-user)" do
+#         # 目的としていたページに遷移していること
+#         scenario "render desired page" do
+#           # user = create(:user)
+#           visit edit_user_path(user)
+#           error_flash("Please log in")
+#           current_path(login_path)
+#           login_as(user)
+#           current_path(edit_user_path(user))
+#           title_heading("Edit user", "Update your profile")
+#         end
+#       end
+#     end
+#   end
+# end
 
 
 
@@ -121,7 +286,7 @@ end
 #   subject { page }
 #
 #   describe "edit" do
-#     include_context "login", :user
+#     include_context "when login", :user
 #     before { click_link "Settings" }
 #     # let(:user) { create(:user) }
 #     # before { visit edit_user_path(user) }

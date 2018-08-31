@@ -19,3 +19,10 @@
 
 # Ignore Byebug command history file.
 .byebug_history
+
+
+# 追加 以下のフォルダ配下のファイル全て
+z_my_memo/
+
+# 追加 config/initializers/secret_token.rb
+.secret

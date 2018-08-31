@@ -46,6 +46,8 @@ group :development, :test do
   gem 'spring-commands-rspec'
   gem 'rspec-its'
   gem "database_cleaner"
+  gem 'pry-rails'
+  gem 'pry-byebug' # デバッグを実施(Ruby 2.0以降で動作する)
 end
 
 group :development do
